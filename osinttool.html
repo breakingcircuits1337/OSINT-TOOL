@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Dashboard - Matrix Theme</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #00ff00;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .light-mode {
+            background-color: #fff;
+            color: #000;
+        }
+        .dashboard {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #000;
+            border: 1px solid #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .light-mode .dashboard {
+            background-color: #fff;
+            border-color: #000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+            color: #00ff00;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px #00ff00;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .light-mode h1 {
+            color: #000;
+            text-shadow: none;
+        }
+        .tool {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            background-color: #111;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .light-mode .tool {
+            background-color: #f4f4f4;
+            border-color: #000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .tool h2 {
+            margin-top: 0;
+            color: #00ff00;
+            font-size: 1.5em;
+            text-shadow: 0 0 5px #00ff00;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .light-mode .tool h2 {
+            color: #000;
+            text-shadow: none;
+        }
+        .tool p {
+            color: #00ff00;
+            opacity: 0.8;
+            transition: color 0.3s;
+        }
+        .light-mode .tool p {
+            color: #000;
+        }
+        .tool a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #00ff00;
+            color: #000;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+        .light-mode .tool a {
+            background-color: #000;
+            color: #fff;
+        }
+        .tool a:hover {
+            background-color: #000;
+            color: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        .light-mode .tool a:hover {
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: #111;
+            color: #00ff00;
+            padding: 10px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .light-mode .tooltip {
+            background-color: #f4f4f4;
+            color: #000;
+            border-color: #000;
+        }
+        .tool:hover .tooltip {
+            display: block;
+        }
+        #searchBar {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: #111;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+        .light-mode #searchBar {
+            background-color: #f4f4f4;
+            border-color: #000;
+            color: #000;
+        }
+        #themeToggle {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .light-mode #themeToggle {
+            background-color: #000;
+            color: #fff;
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.7); }
+            100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3); }
+        }
+        .tool:hover {
+            animation: glow 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>OSINT Dashboard</h1>
+        <button id="themeToggle" onclick="toggleTheme()">Toggle Light Mode</button>
+        <input type="text" id="searchBar" placeholder="Search tools..." oninput="filterTools()">
+        <div id="loading">Loading...</div>
+
+        <!-- Shodan -->
+        <div class="tool">
+            <h2>Shodan</h2>
+            <p>Search for devices connected to the internet.</p>
+            <div class="tooltip">Shodan is a search engine for internet-connected devices.</div>
+            <a href="https://www.shodan.io/" target="_blank">Go to Shodan</a>
+        </div>
+
+        <!-- Maltego -->
+        <div class="tool">
+            <h2>Maltego</h2>
+            <p>Interactive data mining and link analysis tool.</p>
+            <div class="tooltip">Maltego is used for open-source intelligence and forensics.</div>
+            <a href="https://www.maltego.com/" target="_blank">Go to Maltego</a>
+        </div>
+
+        <!-- Hunter.io -->
+        <div class="tool">
+            <h2>Hunter.io</h2>
+            <p>Find email addresses associated with a domain.</p>
+            <div class="tooltip">Hunter.io helps you find professional email addresses.</div>
+            <a href="https://hunter.io/" target="_blank">Go to Hunter.io</a>
+        </div>
+
+        <!-- OSINT Framework -->
+        <div class="tool">
+            <h2>OSINT Framework</h2>
+            <p>A collection of OSINT tools and resources.</p>
+            <div class="tooltip">OSINT Framework organizes OSINT tools by category.</div>
+            <a href="https://osintframework.com/" target="_blank">Go to OSINT Framework</a>
+        </div>
+
+        <!-- Wayback Machine -->
+        <div class="tool">
+            <h2>Wayback Machine</h2>
+            <p>Browse archived versions of websites.</p>
+            <div class="tooltip">Wayback Machine lets you view historical snapshots of websites.</div>
+            <a href="https://archive.org/web/" target="_blank">Go to Wayback Machine</a>
+        </div>
+
+        <!-- TinEye -->
+        <div class="tool">
+            <h2>TinEye</h2>
+            <p>Reverse image search to find image sources.</p>
+            <div class="tooltip">TinEye helps you find where an image appears online.</div>
+            <a href="https://tineye.com/" target="_blank">Go to TinEye</a>
+        </div>
+
+        <!-- Have I Been Pwned -->
+        <div class="tool">
+            <h2>Have I Been Pwned</h2>
+            <p>Check if your email or password has been compromised.</p>
+            <div class="tooltip">Have I Been Pwned tracks data breaches and leaks.</div>
+            <a href="https://haveibeenpwned.com/" target="_blank">Go to Have I Been Pwned</a>
+        </div>
+
+        <!-- Recon-ng -->
+        <div class="tool">
+            <h2>Recon-ng</h2>
+            <p>A full-featured web reconnaissance framework.</p>
+            <div class="tooltip">Recon-ng is a powerful OSINT tool for reconnaissance.</div>
+            <a href="https://github.com/lanmaster53/recon-ng" target="_blank">Go to Recon-ng</a>
+        </div>
+    </div>
+
+    <script>
+        // Search functionality
+        function filterTools() {
+            const searchTerm = document.getElementById('searchBar').value.toLowerCase();
+            const tools = document.querySelectorAll('.tool');
+
+            tools.forEach(tool => {
+                const toolName = tool.querySelector('h2').textContent.toLowerCase();
+                const toolDesc = tool.querySelector('p').textContent.toLowerCase();
+                if (toolName.includes(searchTerm) || toolDesc.includes(searchTerm)) {
+                    tool.style.display = 'block';
+                } else {
+                    tool.style.display = 'none';
+                }
+            });
+        }
+
+        // Dark/Light mode toggle
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            const button = document.getElementById('themeToggle');
+            if (body.classList.contains('light-mode')) {
+                button.textContent = 'Toggle Dark Mode';
+            } else {
+                button.textContent = 'Toggle Light Mode';
+            }
+        }
+
+        // Loading animation
+        document.querySelectorAll('.tool a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('loading').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                }, 2000); // Simulate a 2-second delay
+            });
+        });
+    </script>
+</body>
+</html>
